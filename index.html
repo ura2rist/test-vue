@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Vue test</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/axios@0.19.2/dist/axios.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1 :title="message">{{ message }}</h1>
+			<hr>
+			<h2 v-bind:title="text" v-if='status'>{{ text }}</h2>
+			<h2 v-else>Пусто</h2>
+			<hr>
+			<h2 v-if="amount == 1">Счетчик = 1</h2>
+			<h2 v-else-if="amount == 2">Счетчик = 2</h2>
+			<h2 v-else>Счетчик неизвестен</h2>
+			<hr>
+			<template v-if="!status">
+				<h3>Заголовок 1</h3>
+				<p>Описание 1</p>
+			</template>
+			<template v-else>
+				<h3>Заголовок 2</h3>
+				<p>Описание 2</p>
+			</template>
+			<hr>
+			<h1 v-show="status">Ненужный текст</h1>
+			<hr>
+			<div class="test" v-bind:class="{ 'active': isActive }">
+				<h2 :class="[ isActive ? 'true' : 'false', 'default' ]">Классы</h2>
+				<h2 :style="{ color: 'red', width: width + 'px' }">Стили</h2>
+			</div>
+			<hr>
+			<ul>
+				<li v-for="(item, index) in list">{{ index }} : {{ item }}</li>
+			</ul>
+			<hr>
+			<ul>
+				<li v-for="users in user">{{users.id}}:{{ users.name }}</li>
+			</ul>
+			<hr>
+			<table>
+				<thead>
+					<th>ID</th>
+					<th>Имя</th>
+				</thead>
+				<tbody>
+					<tr v-for="users in user">
+						<td>{{ users.id }}</td>
+						<td>{{ users.name }}</td>
+					</tr>
+				</tbody>
+			</table>
+			<hr>
+			<div>
+				<h3 v-on:click="nameFunction">Клик 1</h3>
+				<h3 @click="nameFunction2">Клик 2</h3>
+			</div>
+			<hr>
+			<button @click="heigh">+1</button>
+			<p>{{ amount }}</p>
+			<hr>
+			<button type="button" @click="getHashtags">Грузи</button>
+			<ul>
+				<li v-for="hashtag in hashtags">{{ hashtag }}</li>
+			</ul>
+			<hr>
+			<h3>{{ textSearch }}(длина {{ textSearch.length }})</h3>
+			<input type="text" v-model="textSearch" name="name">
+		</div>
+		<script type="text/javascript">
+			let app = new Vue({
+				el: '#app',
+				data: {
+					hashtags: [],
+					url:{
+						hashtags: 'https://kitsu.io/api/edge/library-entries/17641027',
+						cities: 'https://dka-develop.ru/api?type=city'
+					},
+					message: 'Привет Vue',
+					status: false,
+					text: 'Какой-то текст',
+					amount: 2,
+					isActive: true,
+					width: 15,
+					textSearch: '',
+					list: ['один', 'два', 'три'],
+					user:[{
+						id: 1,
+						name: 'Иван'
+					},
+					{
+						id: 2,
+						name: 'Валера'
+					}]
+				},
+				watch:{
+					textSearch: function(){
+						if(this.textSearch.length > 3){
+							this.textSearch = 'Меняем содержимое поля'
+						}
+					}
+				},
+				created: function(){
+					this.amount = 4;
+					this.heigh();
+				},
+				methods: {
+					nameFunction(){
+						alert(1);
+					},
+					nameFunction2: function(){
+						alert(2);
+					},
+					heigh(){
+						this.amount++;
+					},
+					getHashtags(){
+						axios.get(this.url.hashtags)
+							.then((response)=>{
+								//this.hashtags = response.data;
+								this.hashtags = ['id','te','wer','ewr'];
+							})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
